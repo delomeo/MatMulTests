@@ -19,6 +19,8 @@ void LogExecutionTimesFixedSize(float Mat1[SIZE][SIZE], float Mat2[SIZE][SIZE], 
 void LogExecutionTimesDynamic(std::vector<float>& dynamicMat1, std::vector<float>& dynamicMat2, std::vector<float>& resDynamic, int rows, int shared, int cols, int iterations);
 
 
+void LogMessage(std::ofstream& logStream, const LogMessageObj& log); 
+
 template <typename Func>
 void LogExecutionTimes(const std::string& logFilePath, Func matrixOperation, int iterations, const std::string& matrixType) {
     std::ofstream logStream(logFilePath, std::ios::app); // Rename the local variable to logStream
@@ -40,8 +42,17 @@ void LogExecutionTimes(const std::string& logFilePath, Func matrixOperation, int
         LogMessage(logStream, log);
     }
 
+    // Log separator
+    LogMessageObj separatorLog(logLevel::NONE, "----------------------------------------");
+    LogMessage(logStream, separatorLog);
+
+    // Calculate and log the average execution time
     long long total = std::accumulate(times.begin(), times.end(), 0LL);
     LogMessageObj resultLog(logLevel::RESULT, "Average execution time (" + matrixType + "): " + std::to_string(total / iterations) + " nanoseconds");
+    LogMessage(logStream, resultLog);
+
+    // Log another separator
+    LogMessage(logStream, separatorLog);
 }
 
 #endif // LOGGING_UTILS_H
