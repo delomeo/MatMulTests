@@ -27,8 +27,8 @@ void LogExecutionTimesFixedSize(float Mat1[SIZE][SIZE], float Mat2[SIZE][SIZE], 
 void LogExecutionTimesDynamic(std::vector<float>& dynamicMat1, std::vector<float>& dynamicMat2, std::vector<float>& resDynamic, int rows, int shared, int cols, int iterations);
 
 // Logging utility functions
-enum class logLevel {INFO, RESULT};
-void LogMessage(std::ofstream& logStream, logLevel level, const std::string& message);
+enum class logLevel {INFO, RESULT, NONE};
+void LogMessage(std::ofstream& logStream, const LogMessageObj& log);
 
 template <typename Func>
 void LogExecutionTimes(const std::string& logFilePath, Func matrixOperation, int iterations, const std::string& matrixType) {
