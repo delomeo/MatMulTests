@@ -43,14 +43,16 @@ void LogExecutionTimes(const std::string& logFilePath, Func matrixOperation, int
         auto start = std::chrono::high_resolution_clock::now();
         matrixOperation();
         auto end = std::chrono::high_resolution_clock::now();
-        auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+        auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count();
         times.push_back(duration);
 
-        LogMessage(logStream, logLevel::INFO, "Iteration " + std::to_string(i + 1) + " (" + matrixType + "): " + std::to_string(duration) + " microseconds");
+        // Create a LogMessageObj for each iteration
+        LogMessageObj log(logLevel::INFO, "Iteration " + std::to_string(i + 1) + " (" + matrixType + "): " + std::to_string(duration) + " nanoseconds");
+        LogMessage(logStream, log);
     }
 
     long long total = std::accumulate(times.begin(), times.end(), 0LL);
-    LogMessage(logStream, logLevel::RESULT, "Average execution time (" + matrixType + "): " + std::to_string(total / iterations) + " microseconds");
+    LogMessageObj resultLog(logLevel::RESULT, "Average execution time (" + matrixType + "): " + std::to_string(total / iterations) + " nanoseconds");
 }
 
 #endif // LOGGING_UTILS_H
