@@ -20,5 +20,18 @@ void LogExecutionTimesFixedSize(float Mat1[SIZE][SIZE], float Mat2[SIZE][SIZE], 
 
 void LogExecutionTimesDynamic(std::vector<float>& dynamicMat1, std::vector<float>& dynamicMat2, std::vector<float>& resDynamic, int rows, int shared, int cols, int iterations) {
     auto operation = [&]() { DynamicMatrixMultiplication(resDynamic, dynamicMat1, dynamicMat2, rows, shared, cols); };
+
+    // Use LogMessageObj for logging
+    std::ofstream logStream("log/execution_times.log", std::ios::app);
+    if (!logStream.is_open()) {
+        throw std::runtime_error("Failed to open log file: log/execution_times.log");
+    }
+
+    LogMessageObj startLog(logLevel::INFO, "Starting dynamic matrix multiplication logging.");
+    LogMessage(logStream, startLog);
+
     LogExecutionTimes("log/execution_times.log", operation, iterations, "dynamic");
+
+    LogMessageObj endLog(logLevel::INFO, "Finished dynamic matrix multiplication logging.");
+    LogMessage(logStream, endLog);
 }
