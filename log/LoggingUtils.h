@@ -9,6 +9,14 @@
 #include "MatrixOps.h"
 #include "GlobalConstants.h"
 
+struct LogMessageObj{
+    std::chrono::time_point<std::chrono::high_resolution_clock> timestamp;
+    logLevel status;
+    std::string message;
+
+    LogMessageObj(logLevel level, const std::string& msg)
+        : timestamp(std::chrono::high_resolution_clock::now()), status(level), message(msg) {}
+};
 
 // Declare external functions
 void MatrixMultiplication(float mat1[SIZE][SIZE], float mat2[SIZE][SIZE], float res[SIZE][SIZE]);
