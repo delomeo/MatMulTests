@@ -1,3 +1,7 @@
 log/execution_times.log
 CompareMatmul.exe
 .vscode
+log/
+const/GlobalConstants.h
+/main.exe
+/const/GlobalConstants.h

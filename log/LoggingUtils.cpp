@@ -5,12 +5,32 @@
 #include "MatrixOps.h"
 #include "LoggingUtils.h"
 
-void LogMessage(std::ofstream& logStream, logLevel level, const std::string& message) {
-    switch (level){
-        case logLevel::INFO: logStream << "[INFO] "; break;
-        case logLevel::RESULT: logStream << "[RESULT] "; break;
+void LogMessage(std::ofstream& logStream, const LogMessageObj& log) {
+    if (!logStream.is_open()) {
+        throw std::runtime_error("Log stream is not open");
     }
-    logStream << message << std::endl; //This should append the message after the flag logLeve
+
+    // Convert high_resolution_clock to system_clock
+    auto systemTime = std::chrono::time_point_cast<std::chrono::system_clock::duration>(
+        log.timestamp - std::chrono::high_resolution_clock::now() + std::chrono::system_clock::now()
+    );
+
+    // Format the timestamp
+    auto time = std::chrono::system_clock::to_time_t(systemTime);
+    std::string timeStr = std::ctime(&time);
+    timeStr.pop_back(); // Remove the newline character added by ctime
+
+    // Convert logLevel to string
+    std::string levelStr;
+    switch (log.status) {
+        case logLevel::INFO: levelStr = "INFO"; break;
+        case logLevel::RESULT: levelStr = "RESULT"; break;
+        case logLevel::NONE: levelStr = "NONE"; break;
+        default: levelStr = "UNKNOWN"; break;
+    }
+
+    // Write the formatted log message to the stream
+    logStream << "{" << timeStr << "} [" << levelStr << "] " << log.message << std::endl;
 }
 
 void LogExecutionTimesFixedSize(float Mat1[SIZE][SIZE], float Mat2[SIZE][SIZE], float res[SIZE][SIZE], int iterations) {
