@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cstring>
 #include <fstream>
 #include <chrono>
 #include <numeric>
@@ -10,15 +11,17 @@ void LogMessage(std::ofstream& logStream, const LogMessageObj& log) {
         throw std::runtime_error("Log stream is not open");
     }
 
-    // Convert high_resolution_clock to system_clock
-    auto systemTime = std::chrono::time_point_cast<std::chrono::system_clock::duration>(
-        log.timestamp - std::chrono::high_resolution_clock::now() + std::chrono::system_clock::now()
-    );
-
+    char formattedTime[100];
     // Format the timestamp
-    auto time = std::chrono::system_clock::to_time_t(systemTime);
-    std::string timeStr = std::ctime(&time);
-    timeStr.pop_back(); // Remove the newline character added by ctime
+    auto now = std::chrono::high_resolution_clock::time_point(log.timestamp);
+    auto timeT = std::chrono::high_resolution_clock::to_time_t(now);
+    std::strftime(formattedTime, sizeof(formattedTime), "%Y-%m-%d %H:%M:%S:", std::localtime(&timeT));
+
+    // Add milliseconds to the formatted time
+    auto milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()) % 1000;
+    //Take only the milliseconds part without the dot
+    std::snprintf(formattedTime + std::strlen(formattedTime), sizeof(formattedTime) - std::strlen(formattedTime), "%03lld", milliseconds.count());
+    
 
     // Convert logLevel to string
     std::string levelStr;
@@ -30,7 +33,7 @@ void LogMessage(std::ofstream& logStream, const LogMessageObj& log) {
     }
 
     // Write the formatted log message to the stream
-    logStream << "{" << timeStr << "} [" << levelStr << "] " << log.message << std::endl;
+    logStream << formattedTime << " [" << levelStr << "] " << log.message << std::endl;
 }
 
 void LogExecutionTimesFixedSize(float Mat1[SIZE][SIZE], float Mat2[SIZE][SIZE], float res[SIZE][SIZE], int iterations) {
@@ -49,6 +52,7 @@ void LogExecutionTimesFixedSize(float Mat1[SIZE][SIZE], float Mat2[SIZE][SIZE], 
 
     LogMessageObj endLog(logLevel::INFO, "Finished fixed-size matrix multiplication logging.");
     LogMessage(logStream, endLog);
+    LogMessage(logStream, LogMessageObj(logLevel::NONE, "----------------------------------------"));
 }
 
 void LogExecutionTimesDynamic(std::vector<float>& dynamicMat1, std::vector<float>& dynamicMat2, std::vector<float>& resDynamic, int rows, int shared, int cols, int iterations) {
@@ -67,4 +71,5 @@ void LogExecutionTimesDynamic(std::vector<float>& dynamicMat1, std::vector<float
 
     LogMessageObj endLog(logLevel::INFO, "Finished dynamic matrix multiplication logging.");
     LogMessage(logStream, endLog);
+    LogMessage(logStream, LogMessageObj(logLevel::NONE, "----------------------------------------"));
 }
