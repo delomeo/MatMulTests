@@ -17,7 +17,7 @@ int main() {
     cout << "Matrix multiplication benchmark started." << endl;
     cout << "----------------------------------------" << endl;
     cout << "Number of cycles: " << CYCLES << endl;
-    cout << "Size of matrices: " << SIZE << endl;
+    cout << "Size of matrices: " << SIZE << "x" << SIZE << endl;
     cout << "Sparsity: " << (SPARSITY ? "Enabled" : "Disabled") << endl;
     cout << "Seed: " << SEED << endl;
     cout << "----------------------------------------" << endl;
