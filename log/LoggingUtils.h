@@ -8,15 +8,7 @@
 #include <numeric>
 #include "MatrixOps.h"
 #include "GlobalConstants.h"
-
-struct LogMessageObj{
-    std::chrono::time_point<std::chrono::high_resolution_clock> timestamp;
-    logLevel status;
-    std::string message;
-
-    LogMessageObj(logLevel level, const std::string& msg)
-        : timestamp(std::chrono::high_resolution_clock::now()), status(level), message(msg) {}
-};
+#include "LogMsgStruct.h"
 
 // Declare external functions
 void MatrixMultiplication(float mat1[SIZE][SIZE], float mat2[SIZE][SIZE], float res[SIZE][SIZE]);
@@ -26,9 +18,6 @@ void DynamicMatrixMultiplication(std::vector<float>& res, const std::vector<floa
 void LogExecutionTimesFixedSize(float Mat1[SIZE][SIZE], float Mat2[SIZE][SIZE], float res[SIZE][SIZE], int iterations);
 void LogExecutionTimesDynamic(std::vector<float>& dynamicMat1, std::vector<float>& dynamicMat2, std::vector<float>& resDynamic, int rows, int shared, int cols, int iterations);
 
-// Logging utility functions
-enum class logLevel {INFO, RESULT, NONE};
-void LogMessage(std::ofstream& logStream, const LogMessageObj& log);
 
 template <typename Func>
 void LogExecutionTimes(const std::string& logFilePath, Func matrixOperation, int iterations, const std::string& matrixType) {
