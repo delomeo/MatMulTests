@@ -4,4 +4,4 @@ const/
 eigen-3.4.0/
 main.cpp
 main.exe
-/const/GlobalConstants.h
+const/GlobalConstants.h
