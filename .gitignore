@@ -4,4 +4,5 @@ CompareMatmul.exe
 log/
 const/GlobalConstants.h
 /main.exe
+const/
 /const/GlobalConstants.h
