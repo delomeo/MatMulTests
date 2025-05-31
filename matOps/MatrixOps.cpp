@@ -67,3 +67,51 @@ void PrintDynamicArray(const std::vector<float>& mat, int rows, int cols) {
         std::cout << std::endl;
     }
 }
+
+template <typename Matrix>
+Matrix matmul(const Matrix& mat1, const Matrix& mat2){
+
+    assert(mat1.cols() == mat2.rows()); // Ensure dimensions are compatible
+
+    Matrix result(mat1.rows(), mat2.cols());
+    for (int i = 0; i < mat1.rows(); ++i) {
+        for (int j = 0; j < mat2.cols(); ++j) {
+            result(i, j) = 0;
+            for (int k = 0; k < mat1.cols(); ++k) {
+                result(i, j) += mat1(i, k) * mat2(k, j);
+            }
+        }
+    }
+    return result;
+}
+
+std::array<std::array<float, SIZE>, SIZE> matmul(
+    const float mat1[SIZE][SIZE],
+    const float mat2[SIZE][SIZE]) {
+    std::array<std::array<float, SIZE>, SIZE> result = {};
+    for (int i = 0; i < SIZE; ++i) {
+        for (int j = 0; j < SIZE; ++j) {
+            result[i][j] = 0;
+            for (int k = 0; k < SIZE; ++k) {
+                result[i][j] += mat1[i][k] * mat2[k][j];
+            }
+        }
+    }
+    return result;
+}
+
+std::vector<float> matmul(const std::vector<float>& mat1, const std::vector<float>& mat2, int rows, int shared, int cols) {
+    std::vector<float> result(rows * cols, 0.0f);
+    for (int i = 0; i < rows; ++i) {
+        for (int j = 0; j < cols; ++j) {
+            for (int k = 0; k < shared; ++k) {
+                result[i * cols + j] += mat1[i * shared + k] * mat2[k * cols + j];
+            }
+        }
+    }
+    return result;
+}
+
+Eigen::MatrixXd matmul(const Eigen::MatrixXd& mat1, const Eigen::MatrixXd& mat2) {
+    return mat1 * mat2; // Use Eigen's built-in multiplication
+}
