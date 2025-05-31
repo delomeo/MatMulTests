@@ -5,6 +5,9 @@
 #include <numeric>
 #include "MatrixOps.h"
 #include "LoggingUtils.h"
+#include <Eigen/Dense>
+
+using Eigen::MatrixXd;
 
 void LogMessage(std::ofstream& logStream, const LogMessageObj& log) {
     if (!logStream.is_open()) {
@@ -19,9 +22,9 @@ void LogMessage(std::ofstream& logStream, const LogMessageObj& log) {
 
     // Add milliseconds to the formatted time
     auto milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()) % 1000;
-    //Take only the milliseconds part without the dot
-    std::snprintf(formattedTime + std::strlen(formattedTime), sizeof(formattedTime) - std::strlen(formattedTime), "%03lld", milliseconds.count());
-    
+    snprintf(formattedTime + strlen(formattedTime), sizeof(formattedTime) - strlen(formattedTime), "%03lld", milliseconds.count());
+    // Ensure the formatted time is null-terminated
+    formattedTime[sizeof(formattedTime) - 1] = '\0';
 
     // Convert logLevel to string
     std::string levelStr;
@@ -73,3 +76,23 @@ void LogExecutionTimesDynamic(std::vector<float>& dynamicMat1, std::vector<float
     LogMessage(logStream, endLog);
     LogMessage(logStream, LogMessageObj(logLevel::NONE, "----------------------------------------"));
 }
+
+void LogExecutionTimesEigen(const Eigen::MatrixXd& mat1, const Eigen::MatrixXd& mat2, Eigen::MatrixXd& resEigen, int iterations) {
+    auto operation = [&]() { resEigen = mat1 * mat2; };
+
+    // Use LogMessageObj for logging
+    std::ofstream logStream("log/execution_times.log", std::ios::app);
+    if (!logStream.is_open()) {
+        throw std::runtime_error("Failed to open log file: log/execution_times.log");
+    }
+
+    LogMessageObj startLog(logLevel::INFO, "Starting Eigen matrix multiplication logging.");
+    LogMessage(logStream, startLog);
+
+    LogExecutionTimes("log/execution_times.log", operation, iterations, "Eigen");
+
+    LogMessageObj endLog(logLevel::INFO, "Finished Eigen matrix multiplication logging.");
+    LogMessage(logStream, endLog);
+    LogMessage(logStream, LogMessageObj(logLevel::NONE, "----------------------------------------"));
+}
+        

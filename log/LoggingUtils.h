@@ -6,6 +6,8 @@
 # include <fstream>
 #include <chrono>
 #include <numeric>
+#include <Eigen/Dense>
+#include <Eigen/Sparse>
 #include "MatrixOps.h"
 #include "GlobalConstants.h"
 #include "LogMsgStruct.h"
@@ -54,5 +56,7 @@ void LogExecutionTimes(const std::string& logFilePath, Func matrixOperation, int
     // Log another separator
     LogMessage(logStream, separatorLog);
 }
+
+void LogExecutionTimesEigen(const Eigen::MatrixXd& mat1, const Eigen::MatrixXd& mat2, Eigen::MatrixXd& resEigen, int iterations);
 
 #endif // LOGGING_UTILS_H
