@@ -1,8 +1,7 @@
 log/execution_times.log
-CompareMatmul.exe
 .vscode
-log/
-const/GlobalConstants.h
-/main.exe
 const/
+eigen-3.4.0/
+main.cpp
+main.exe
 /const/GlobalConstants.h
